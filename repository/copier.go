@@ -112,19 +112,13 @@ func (c *HDFSCopier) CopyFromRemote(src, dst string, localFs billy.Filesystem) (
 }
 
 func (c *HDFSCopier) deleteIfExists(file string) error {
-	_, err := c.client.Stat(file)
-	if err == nil {
-		err = c.client.Remove(file)
-		if err != nil {
-			return err
-		}
-	}
-
-	if err != nil && !os.IsNotExist(err) {
+	if _, err := c.client.Stat(file); os.IsNotExist(err) {
+		return nil
+	} else if err != nil {
 		return err
 	}
 
-	return nil
+	return c.client.Remove(file)
 }
 
 // CopyToRemote copies from the provided billy Filesystem to HDFS. If the file exists on HDFS it will be overridden.
