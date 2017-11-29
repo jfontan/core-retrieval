@@ -178,11 +178,6 @@ func (c *HDFSCopier) CopyToRemote(src, dst string, localFs billy.Filesystem) (er
 		return err
 	}
 
-	err = c.deleteIfExists(p)
-	if err != nil {
-		return err
-	}
-
 	err = c.client.Rename(pCopy, p)
 
 	if err != nil {
